@@ -34,7 +34,7 @@ export function ModelSelector() {
                 {disabled && (
                   <button
                     onClick={onAddApiKey}
-                    className="text-xs text-blue-600 hover:text-blue-700 hover:underline"
+                    className="text-xs text-violet-600 hover:text-violet-700 hover:underline"
                   >
                     Add key
                   </button>
@@ -54,7 +54,7 @@ export function ModelSelector() {
                         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
                         ${
                           isSelected && !disabled
-                            ? 'bg-blue-50 border border-blue-200'
+                            ? 'bg-violet-50 border border-violet-200'
                             : 'bg-neutral-50 border border-transparent'
                         }
                         ${!disabled && !isSelected ? 'hover:bg-neutral-100' : ''}
@@ -65,7 +65,7 @@ export function ModelSelector() {
                           w-4 h-4 rounded border flex items-center justify-center
                           ${
                             isSelected && !disabled
-                              ? 'bg-blue-600 border-blue-600'
+                              ? 'bg-violet-600 border-violet-600'
                               : 'border-neutral-300'
                           }
                         `}

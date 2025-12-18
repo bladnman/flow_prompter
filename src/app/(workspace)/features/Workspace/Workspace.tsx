@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useWorkspace } from './hooks/useWorkspace';
 import { PromptEditor } from '../PromptEditor/PromptEditor';
 import { ModelSelector } from '../ModelSelector/ModelSelector';
@@ -10,7 +11,7 @@ import { ExecutionPanel } from '../ExecutionPanel/ExecutionPanel';
 import { PromptAssistant } from '../PromptAssistant/PromptAssistant';
 import { NavActions } from './features/NavActions/NavActions';
 import { Button, SlideOverPanel, SettingsModal } from '@/components';
-import { Sparkles } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
 
 export function Workspace() {
   const { handleKeyDown, isAssistantOpen, toggleAssistant, closeAssistant } =
@@ -25,7 +26,14 @@ export function Workspace() {
       {/* Header */}
       <header className="flex-shrink-0 bg-white border-b border-neutral-200 px-6 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/logo-flow-prompter-1.png"
+              alt="Flow Prompter"
+              width={36}
+              height={36}
+              className="rounded-lg"
+            />
             <h1 className="text-xl font-bold text-neutral-900">Flow Prompter</h1>
             <span className="text-sm text-neutral-500">Prompt Engineering Playground</span>
           </div>
@@ -36,7 +44,8 @@ export function Workspace() {
               variant={isAssistantOpen ? 'primary' : 'ghost'}
               size="sm"
               onClick={toggleAssistant}
-              icon={<Sparkles className="h-4 w-4" />}
+              icon={<Wand2 className="h-4 w-4" />}
+              className={isAssistantOpen ? '' : 'text-violet-600 hover:text-violet-700 hover:bg-violet-50'}
             >
               Assistant
             </Button>

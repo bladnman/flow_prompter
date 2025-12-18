@@ -51,7 +51,7 @@ export function HistoryTimeline() {
                   transition-all duration-150
                   ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-violet-600 text-white shadow-sm'
                       : 'text-neutral-500 hover:bg-neutral-300 hover:text-neutral-700'
                   }
                 `}

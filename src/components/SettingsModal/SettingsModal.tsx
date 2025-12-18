@@ -164,7 +164,7 @@ function ApiKeyInput({
             border border-neutral-300 rounded-md
             text-sm text-neutral-900
             placeholder:text-neutral-400
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500
             transition-colors
           "
           autoComplete="off"

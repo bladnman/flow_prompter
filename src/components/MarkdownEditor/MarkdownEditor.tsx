@@ -116,7 +116,7 @@ export function MarkdownEditor({
   return (
     <div
       className={`
-        ${borderless ? '' : 'border border-neutral-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent'}
+        ${borderless ? '' : 'border border-neutral-200 rounded-lg focus-within:ring-2 focus-within:ring-violet-500 focus-within:border-transparent'}
         overflow-hidden
         ${disabled ? 'bg-neutral-50 cursor-not-allowed' : readOnly ? 'bg-neutral-50/50' : 'bg-white'}
         ${className}

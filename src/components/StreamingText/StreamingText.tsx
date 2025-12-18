@@ -35,7 +35,7 @@ export function StreamingText({
     >
       <MarkdownRenderer content={content} />
       {isStreaming && (
-        <span className="inline-block w-2 h-4 bg-blue-500 animate-pulse ml-1" />
+        <span className="inline-block w-2 h-4 bg-violet-500 animate-pulse ml-1" />
       )}
     </div>
   );

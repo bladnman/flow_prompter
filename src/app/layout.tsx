@@ -28,7 +28,7 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Flow Prompt",
+  title: "Flow Prompter",
   description: "A prompt engineering playground for iterating on prompts with multi-model testing and AI-assisted refinement",
 };
 

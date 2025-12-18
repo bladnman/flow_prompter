@@ -41,14 +41,20 @@ export function useWorkspace() {
   }, [hasCompletedOnboarding, hasAnyApiKey, serverConfiguredProviders, serverProvidersLoaded, openSettingsModal]);
 
   // Assistant panel state with localStorage persistence
-  const [isAssistantOpen, setIsAssistantOpen] = useState(() => {
-    if (typeof window === 'undefined') return false;
+  // Initialize as false to avoid hydration mismatch, then sync from localStorage
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+
+  // Sync assistant panel state from localStorage on mount
+  useEffect(() => {
     try {
-      return localStorage.getItem(STORAGE_KEYS.ASSISTANT_PANEL_OPEN) === 'true';
+      const stored = localStorage.getItem(STORAGE_KEYS.ASSISTANT_PANEL_OPEN);
+      if (stored === 'true') {
+        setIsAssistantOpen(true);
+      }
     } catch {
-      return false;
+      // Ignore localStorage errors
     }
-  });
+  }, []);
 
   const toggleAssistant = useCallback(() => {
     setIsAssistantOpen((prev) => {

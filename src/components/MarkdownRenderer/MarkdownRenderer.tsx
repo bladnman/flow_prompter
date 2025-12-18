@@ -18,7 +18,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
         prose-p:text-neutral-700
         prose-code:text-neutral-800 prose-code:bg-neutral-100 prose-code:px-1 prose-code:rounded
         prose-pre:bg-neutral-900 prose-pre:text-neutral-100
-        prose-a:text-blue-600
+        prose-a:text-violet-600
         prose-li:text-neutral-700
         ${className}
       `}
