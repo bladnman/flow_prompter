@@ -14,6 +14,7 @@ export const STORAGE_KEYS = {
   API_KEY_ANTHROPIC: 'flowprompt:apiKey:anthropic',
   API_KEY_GOOGLE: 'flowprompt:apiKey:google',
   ONBOARDING_COMPLETE: 'flowprompt:onboardingComplete',
+  THEME: 'flowprompt:theme',
 } as const;
 
 // Keyboard shortcuts

@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react';
 import { useExecutionStore } from '@/stores';
-import { getModelById, MODELS } from '@/config/providers';
+import { getModelById, MODELS, ProviderType } from '@/config/providers';
+import type { ExecutionErrorType } from '@/types/models';
 
 export interface RunDisplay {
   modelId: string;
@@ -12,6 +13,8 @@ export interface RunDisplay {
   content: string;
   thinking?: string;
   errorMessage?: string;
+  errorType?: ExecutionErrorType;
+  errorProvider?: ProviderType;
   latencyMs?: number;
 }
 
@@ -46,6 +49,8 @@ export function useExecutionPanel() {
           content: run.output,
           thinking: run.thinking,
           errorMessage: run.errorMessage,
+          errorType: run.errorType,
+          errorProvider: run.errorProvider,
           latencyMs: run.latencyMs,
         });
       });
@@ -87,6 +92,8 @@ export function useExecutionPanel() {
         content: run.output,
         thinking: run.thinking,
         errorMessage: run.errorMessage,
+        errorType: run.errorType,
+        errorProvider: run.errorProvider,
         latencyMs: run.latencyMs,
       });
     });

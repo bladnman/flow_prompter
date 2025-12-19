@@ -1,5 +1,10 @@
 // Core data model types
 
+import type { ProviderType } from '@/config/providers';
+
+// Execution error types for distinguishing API key errors from other errors
+export type ExecutionErrorType = 'missing_api_key' | 'api_error' | 'network_error' | 'unknown';
+
 // Example types for prompt examples
 export type ExampleType = 'positive' | 'negative';
 
@@ -19,6 +24,8 @@ export interface CompletedRunSnapshot {
   thinking?: string;
   status: 'completed' | 'error';
   errorMessage?: string;
+  errorType?: ExecutionErrorType;
+  errorProvider?: ProviderType;
   latencyMs?: number;
 }
 

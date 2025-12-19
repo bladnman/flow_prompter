@@ -2,10 +2,10 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { enableMapSet } from 'immer';
-import type { Prompt, RunParameters, ExecutionSnapshot, PromptVersion, PromptExample, ExampleType, PromptSnapshot, ChangedPart } from '@/types/models';
+import type { Prompt, RunParameters, ExecutionSnapshot, PromptVersion, PromptExample, ExampleType, PromptSnapshot, ChangedPart, ExecutionErrorType } from '@/types/models';
 import type { StreamingState } from '@/types/streaming';
 import { initialStreamingState } from '@/types/streaming';
-import { ModelConfig, getModelById } from '@/config/providers';
+import { ModelConfig, getModelById, ProviderType } from '@/config/providers';
 
 // Enable Map/Set support for Immer
 enableMapSet();
@@ -23,6 +23,8 @@ interface CompletedRun {
   thinking?: string;
   status: 'completed' | 'error';
   errorMessage?: string;
+  errorType?: ExecutionErrorType;
+  errorProvider?: ProviderType;
   latencyMs?: number;
 }
 
@@ -90,7 +92,7 @@ interface ExecutionActions {
     modelId: string,
     result: { output: string; thinking?: string; latencyMs?: number }
   ) => void;
-  failExecution: (modelId: string, error: string) => void;
+  failExecution: (modelId: string, error: string, errorType?: ExecutionErrorType, errorProvider?: ProviderType) => void;
   clearExecutions: () => void;
 
   // Snapshot for assistant context
@@ -278,7 +280,7 @@ export const useExecutionStore = create<ExecutionState & ExecutionActions>()(
         }
       }),
 
-    failExecution: (modelId, error) =>
+    failExecution: (modelId, error, errorType = 'unknown', errorProvider) =>
       set((state) => {
         const run = state.activeRuns.get(modelId);
         if (run) {
@@ -288,6 +290,8 @@ export const useExecutionStore = create<ExecutionState & ExecutionActions>()(
             output: '',
             status: 'error',
             errorMessage: error,
+            errorType,
+            errorProvider,
           });
           state.activeRuns.delete(modelId);
         }
@@ -347,6 +351,8 @@ export const useExecutionStore = create<ExecutionState & ExecutionActions>()(
           thinking: run.thinking,
           status: run.status,
           errorMessage: run.errorMessage,
+          errorType: run.errorType,
+          errorProvider: run.errorProvider,
           latencyMs: run.latencyMs,
         }));
 

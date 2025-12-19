@@ -17,6 +17,7 @@ const applyPatchSchema = z.object({
     rationale: z.string(),
   }),
   modelId: z.string().optional(),
+  apiKey: z.string().optional(), // Client-provided API key (from localStorage)
 });
 
 const SYSTEM_PROMPT = `You are a prompt editing assistant. Your job is to apply a suggested edit to a prompt.
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { currentPrompt, originalPrompt, suggestion, modelId } = parsed.data;
+    const { currentPrompt, originalPrompt, suggestion, modelId, apiKey } = parsed.data;
 
     // Build the user message with all context
     let userMessage = `## Current Prompt\n${currentPrompt}\n\n`;
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
     userMessage += `### Rationale\n${suggestion.rationale}\n\n`;
     userMessage += `Now output ONLY the final prompt text after applying this suggestion:`;
 
-    const model = getLanguageModel(modelId || DEFAULT_APPLY_MODEL);
+    const model = getLanguageModel(modelId || DEFAULT_APPLY_MODEL, apiKey);
 
     // Use generateText (non-streaming) since we need the complete result
     const result = await generateText({

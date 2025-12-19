@@ -6,3 +6,5 @@ export { MarkdownRenderer } from './MarkdownRenderer/MarkdownRenderer';
 export { StreamingText } from './StreamingText/StreamingText';
 export { SettingsModal } from './SettingsModal/SettingsModal';
 export { HelpSection } from './HelpSection/HelpSection';
+export { ThemeInitializer } from './ThemeInitializer/ThemeInitializer';
+export { ThemeToggle } from './ThemeToggle/ThemeToggle';

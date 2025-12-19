@@ -24,9 +24,9 @@ interface SuggestionCardProps {
 }
 
 const confidenceColors = {
-  high: 'bg-green-100 text-green-700 border-green-200',
-  medium: 'bg-amber-100 text-amber-700 border-amber-200',
-  low: 'bg-neutral-100 text-neutral-600 border-neutral-200',
+  high: 'bg-green-500/15 text-green-600 border-green-500/30',
+  medium: 'bg-amber-500/15 text-amber-600 border-amber-500/30',
+  low: 'bg-neutral-500/15 text-neutral-500 border-neutral-500/30',
 };
 
 const typeLabels = {
@@ -55,12 +55,12 @@ export function SuggestionCard({
     <div className={`border rounded-lg bg-white overflow-hidden ${isStale ? 'border-amber-200' : 'border-neutral-200'}`}>
       {/* Stale indicator */}
       {isStale && (
-        <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-700">
+        <div className="px-3 py-1.5 bg-amber-500/10 border-b border-amber-500/30 text-xs text-amber-600">
           Prompt has changed since this suggestion was made
         </div>
       )}
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-neutral-50 border-b border-neutral-200">
+      <div className="flex items-center justify-between px-3 py-2 bg-black/5 border-b border-neutral-200">
         <div className="flex items-center gap-2 flex-wrap">
           {/* Target indicator */}
           {(() => {
@@ -130,14 +130,17 @@ export function SuggestionCard({
 
         <div
           className={`
-            bg-neutral-50 rounded border border-neutral-200 p-3
+            bg-black/5 rounded border border-neutral-200 p-3
             font-mono text-sm text-neutral-800
             ${isExpanded ? '' : 'max-h-24 overflow-hidden relative'}
           `}
         >
           <pre className="whitespace-pre-wrap">{suggestion.proposed}</pre>
           {!isExpanded && (
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-neutral-50 to-transparent" />
+            <div
+              className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
+              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.05), transparent)' }}
+            />
           )}
         </div>
       </div>
@@ -146,7 +149,7 @@ export function SuggestionCard({
       <div className="border-t border-neutral-200">
         <button
           onClick={() => setShowRationale(!showRationale)}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs text-neutral-600 hover:bg-neutral-50"
+          className="w-full flex items-center justify-between px-3 py-2 text-xs text-neutral-600 hover:bg-black/5"
         >
           <span className="font-medium">Why this suggestion?</span>
           {showRationale ? (

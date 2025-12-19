@@ -190,24 +190,26 @@ export interface CardColors {
 }
 
 export function getProviderCardColors(provider: ProviderType): CardColors {
+  // Uses CSS variables for title and tint colors to support theme switching
+  // Border and accent colors remain constant across themes
   const colors: Record<ProviderType, CardColors> = {
     openai: {
       border: '#22c55e',
-      title: '#15803d',
+      title: 'var(--provider-openai-title)',
       accent: '#22c55e',
-      tint: '#f0fdf4',
+      tint: 'var(--provider-openai-tint)',
     },
     anthropic: {
       border: '#f97316',
-      title: '#c2410c',
+      title: 'var(--provider-anthropic-title)',
       accent: '#f97316',
-      tint: '#fff7ed',
+      tint: 'var(--provider-anthropic-tint)',
     },
     google: {
       border: '#3b82f6',
-      title: '#1d4ed8',
+      title: 'var(--provider-google-title)',
       accent: '#3b82f6',
-      tint: '#eff6ff',
+      tint: 'var(--provider-google-tint)',
     },
   };
   return colors[provider];

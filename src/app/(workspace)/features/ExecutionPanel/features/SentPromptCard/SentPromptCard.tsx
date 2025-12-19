@@ -14,7 +14,7 @@ export function SentPromptCard({ prompt }: SentPromptCardProps) {
 
   return (
     <div
-      className="bg-white/50 border border-neutral-200 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:bg-white"
+      className="bg-black/5 border border-neutral-200 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:bg-black/10"
       onClick={toggleExpanded}
       role="button"
       tabIndex={0}

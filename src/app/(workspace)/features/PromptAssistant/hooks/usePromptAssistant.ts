@@ -1,9 +1,9 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useAssistantStore, useExecutionStore } from '@/stores';
+import { useAssistantStore, useExecutionStore, useSettingsStore } from '@/stores';
 import type { ParsedSuggestion } from '../utils/parseAssistantResponse';
-import type { PromptExample } from '@/types/models';
+import { getModelById } from '@/config/providers';
 
 export function usePromptAssistant() {
   const {
@@ -26,15 +26,14 @@ export function usePromptAssistant() {
   const {
     currentPrompt,
     updatePromptContent,
-    promptIntent,
     setIntent,
-    promptGuardrails,
     setGuardrails,
-    promptExamples,
     addExample,
     updateExample,
     removeExample,
   } = useExecutionStore();
+
+  const { getApiKey } = useSettingsStore();
 
   // Track which suggestion is currently being applied
   const [applyingId, setApplyingId] = useState<string | null>(null);
@@ -133,14 +132,11 @@ export function usePromptAssistant() {
           if (op.action === 'add' && op.exampleType) {
             // Add example and then update its content
             addExample(op.exampleType);
-            // The newly added example will be the last one
-            const newExamples = [...promptExamples];
-            const lastExample = newExamples[newExamples.length - 1];
+            // Get fresh state from store (Zustand updates are synchronous)
+            const freshExamples = useExecutionStore.getState().promptExamples;
+            const lastExample = freshExamples[freshExamples.length - 1];
             if (lastExample) {
-              // Wait a tick for the store to update, then set content
-              setTimeout(() => {
-                updateExample(lastExample.id, suggestion.proposed);
-              }, 0);
+              updateExample(lastExample.id, suggestion.proposed);
             }
           } else if (op.action === 'update' && op.exampleId) {
             updateExample(op.exampleId, suggestion.proposed);
@@ -149,6 +145,10 @@ export function usePromptAssistant() {
           }
         } else {
           // For prompt target, use the intelligent merging API
+          // Get the API key for the model's provider
+          const modelConfig = getModelById(selectedModelId);
+          const apiKey = modelConfig ? getApiKey(modelConfig.provider) : undefined;
+
           const response = await fetch('/api/apply-patch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -162,6 +162,7 @@ export function usePromptAssistant() {
                 rationale: suggestion.rationale,
               },
               modelId: selectedModelId,
+              apiKey: apiKey || undefined, // Don't send empty string
             }),
           });
 
@@ -194,7 +195,7 @@ export function usePromptAssistant() {
       addExample,
       updateExample,
       removeExample,
-      promptExamples,
+      getApiKey,
     ]
   );
 

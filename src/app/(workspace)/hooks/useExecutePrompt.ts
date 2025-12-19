@@ -2,9 +2,19 @@
 
 import { useCallback } from 'react';
 import { useExecutionStore, useSettingsStore } from '@/stores';
-import { getModelById } from '@/config/providers';
+import { getModelById, ProviderType } from '@/config/providers';
 import { buildPrompt } from '@/utils/prompt/buildPrompt';
 import { v4 as uuidv4 } from 'uuid';
+
+// Helper to get display name for provider
+function getProviderDisplayName(provider: ProviderType): string {
+  const names: Record<ProviderType, string> = {
+    openai: 'OpenAI',
+    anthropic: 'Anthropic',
+    google: 'Google',
+  };
+  return names[provider];
+}
 
 export function useExecutePrompt() {
   const {
@@ -21,7 +31,7 @@ export function useExecutePrompt() {
     setLastSentPrompt,
     pushHistory,
   } = useExecutionStore();
-  const { getApiKey } = useSettingsStore();
+  const { getApiKey, isProviderAvailable } = useSettingsStore();
 
   const executeModel = useCallback(
     async (modelId: string, fullPrompt: string) => {
@@ -32,9 +42,27 @@ export function useExecutePrompt() {
       const runId = uuidv4();
       startExecution(modelId, runId);
 
-      // Get the API key for this model's provider
+      // Get the model config
       const model = getModelById(modelId);
-      const apiKey = model ? getApiKey(model.provider) : undefined;
+      if (!model) {
+        failExecution(modelId, 'Unknown model', 'unknown');
+        return;
+      }
+
+      // Check if provider has API key available (local or server)
+      if (!isProviderAvailable(model.provider)) {
+        const providerLabel = getProviderDisplayName(model.provider);
+        failExecution(
+          modelId,
+          `No API key configured for ${providerLabel}`,
+          'missing_api_key',
+          model.provider
+        );
+        return;
+      }
+
+      // Get the API key for this model's provider
+      const apiKey = getApiKey(model.provider);
 
       try {
         const response = await fetch('/api/execute', {
@@ -79,13 +107,14 @@ export function useExecutePrompt() {
         completeExecution(modelId, { output, latencyMs });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
-        failExecution(modelId, message);
+        failExecution(modelId, message, 'api_error');
       }
     },
     [
       currentPrompt,
       parameters,
       getApiKey,
+      isProviderAvailable,
       startExecution,
       updateExecution,
       completeExecution,

@@ -11,8 +11,10 @@ import {
   AlertCircle,
   Brain,
   Loader2,
+  KeyRound,
 } from 'lucide-react';
 import { getProviderCardColors } from '@/config/providers';
+import { ApiKeyErrorContent } from './features/ApiKeyErrorContent/ApiKeyErrorContent';
 
 // ============================================
 // ADJUST THIS VALUE TO CHANGE COLLAPSED HEIGHT
@@ -80,9 +82,18 @@ export function OutputCard({ run }: OutputCardProps) {
             </span>
           )}
           {run.status === 'error' && (
-            <span className="flex items-center gap-1 text-xs text-red-500">
-              <AlertCircle className="h-3 w-3" />
-              Error
+            <span className="flex items-center gap-1 text-xs">
+              {run.errorType === 'missing_api_key' ? (
+                <>
+                  <KeyRound className="h-3 w-3 text-amber-500" />
+                  <span className="text-amber-600">Missing Key</span>
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="h-3 w-3 text-red-500" />
+                  <span className="text-red-500">Error</span>
+                </>
+              )}
             </span>
           )}
         </div>
@@ -143,9 +154,15 @@ export function OutputCard({ run }: OutputCardProps) {
             style={{ minHeight: COLLAPSED_CONTENT_HEIGHT }}
           >
             {run.status === 'error' ? (
-              <div className="text-red-500 text-sm">
-                {run.errorMessage || 'An error occurred'}
-              </div>
+              run.errorType === 'missing_api_key' ? (
+                <ApiKeyErrorContent
+                  errorMessage={run.errorMessage || 'API key not configured'}
+                />
+              ) : (
+                <div className="text-red-500 text-sm">
+                  {run.errorMessage || 'An error occurred'}
+                </div>
+              )
             ) : hasContent ? (
               <div className="text-neutral-700 text-sm leading-relaxed">
                 <StreamingText
@@ -169,9 +186,15 @@ export function OutputCard({ run }: OutputCardProps) {
           style={{ height: COLLAPSED_CONTENT_HEIGHT }}
         >
           {run.status === 'error' ? (
-            <div className="text-red-500 text-sm">
-              {run.errorMessage || 'An error occurred'}
-            </div>
+            run.errorType === 'missing_api_key' ? (
+              <ApiKeyErrorContent
+                errorMessage={run.errorMessage || 'API key not configured'}
+              />
+            ) : (
+              <div className="text-red-500 text-sm">
+                {run.errorMessage || 'An error occurred'}
+              </div>
+            )
           ) : hasContent ? (
             <div className="text-neutral-600 text-sm leading-relaxed">
               <StreamingText

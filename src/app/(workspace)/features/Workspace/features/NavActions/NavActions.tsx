@@ -1,7 +1,7 @@
 'use client';
 
 import { useNavActions } from './hooks/useNavActions';
-import { Button } from '@/components';
+import { Button, ThemeToggle } from '@/components';
 import { Play, Download, Upload, Settings, FilePlus } from 'lucide-react';
 
 export function NavActions() {
@@ -78,6 +78,9 @@ export function NavActions() {
       >
         Run
       </Button>
+
+      {/* Theme toggle */}
+      <ThemeToggle />
 
       {/* Settings button */}
       <button

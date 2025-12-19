@@ -3,6 +3,124 @@
 :root {
   --background: #fafafa;
   --foreground: #171717;
+
+  /* Scrollbar colors */
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a1a1a1;
+
+  /* Surface colors */
+  --surface: #ffffff;
+  --surface-raised: #f5f5f5;
+
+  /* Provider title colors */
+  --provider-openai-title: #15803d;
+  --provider-anthropic-title: #c2410c;
+  --provider-google-title: #1d4ed8;
+
+  /* Provider tint colors */
+  --provider-openai-tint: #f0fdf4;
+  --provider-anthropic-tint: #fff7ed;
+  --provider-google-tint: #eff6ff;
+}
+
+/* Dark-ish theme (warm gray) */
+[data-theme="dark"] {
+  --background: #1f1d1b;
+  --foreground: #e8e4df;
+
+  /* Scrollbar colors */
+  --scrollbar-track: #2a2724;
+  --scrollbar-thumb: #524d47;
+  --scrollbar-thumb-hover: #6b6560;
+
+  /* Surface colors */
+  --surface: #2a2724;
+  --surface-raised: #363330;
+
+  /* Provider title colors (lighter for dark mode) */
+  --provider-openai-title: #86efac;
+  --provider-anthropic-title: #fdba74;
+  --provider-google-title: #93c5fd;
+
+  /* Provider tint colors (subtle for dark mode) */
+  --provider-openai-tint: rgba(34, 197, 94, 0.15);
+  --provider-anthropic-tint: rgba(249, 115, 22, 0.15);
+  --provider-google-tint: rgba(59, 130, 246, 0.15);
+}
+
+/* Dark mode color overrides for Tailwind utilities */
+[data-theme="dark"] {
+  /* White backgrounds become dark surface */
+  & .bg-white {
+    background-color: var(--surface);
+  }
+
+  /* Neutral backgrounds */
+  & .bg-neutral-50 {
+    background-color: #363330;
+  }
+  & .bg-neutral-100 {
+    background-color: #3d3935;
+  }
+  & .bg-neutral-200 {
+    background-color: #524d47;
+  }
+
+  /* Neutral text colors (inverted for dark mode) */
+  & .text-neutral-400 {
+    color: #8a847d;
+  }
+  & .text-neutral-500 {
+    color: #a8a29a;
+  }
+  & .text-neutral-600 {
+    color: #b5b0a8;
+  }
+  & .text-neutral-700 {
+    color: #c7c2ba;
+  }
+  & .text-neutral-800 {
+    color: #dbd6ce;
+  }
+  & .text-neutral-900 {
+    color: #e8e4df;
+  }
+
+  /* Neutral borders */
+  & .border-neutral-100 {
+    border-color: #3d3935;
+  }
+  & .border-neutral-200 {
+    border-color: #524d47;
+  }
+  & .border-neutral-300 {
+    border-color: #6b6560;
+  }
+
+  /* Hover backgrounds */
+  & .hover\:bg-neutral-50:hover {
+    background-color: #3d3935;
+  }
+  & .hover\:bg-neutral-100:hover {
+    background-color: #524d47;
+  }
+  & .hover\:bg-neutral-200:hover {
+    background-color: #6b6560;
+  }
+
+  /* Hover text */
+  & .hover\:text-neutral-700:hover {
+    color: #dbd6ce;
+  }
+  & .hover\:text-neutral-900:hover {
+    color: #e8e4df;
+  }
+
+  /* Focus ring for dark mode */
+  & :focus-visible {
+    outline-color: #a78bfa;
+  }
 }
 
 @theme inline {
@@ -33,17 +151,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scrollbar-track);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* TipTap editor styles */

@@ -54,10 +54,10 @@ export function ModelSelector() {
                         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
                         ${
                           isSelected && !disabled
-                            ? 'bg-violet-50 border border-violet-200'
-                            : 'bg-neutral-50 border border-transparent'
+                            ? 'bg-violet-500/15 border border-violet-400/50'
+                            : 'bg-black/5 border border-transparent'
                         }
-                        ${!disabled && !isSelected ? 'hover:bg-neutral-100' : ''}
+                        ${!disabled && !isSelected ? 'hover:bg-black/10' : ''}
                       `}
                     >
                       <div
