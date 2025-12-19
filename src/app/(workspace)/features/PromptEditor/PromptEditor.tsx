@@ -2,7 +2,6 @@
 
 import { usePromptEditor } from './hooks/usePromptEditor';
 import { Panel, MarkdownEditor } from '@/components';
-import { HistoryTimeline } from './features/HistoryTimeline/HistoryTimeline';
 
 export function PromptEditor() {
   const {
@@ -30,7 +29,6 @@ export function PromptEditor() {
         minHeight="100%"
         borderless
       />
-      <HistoryTimeline />
     </Panel>
   );
 }

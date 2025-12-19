@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useCallback } from 'react';
 import { useWorkspace } from './hooks/useWorkspace';
 import { usePanelModel } from './hooks/usePanelModel';
 import { PromptEditor } from '../PromptEditor/PromptEditor';
@@ -11,10 +12,12 @@ import { GuardrailsPanel } from '../GuardrailsPanel/GuardrailsPanel';
 import { ExecutionPanel } from '../ExecutionPanel/ExecutionPanel';
 import { PromptAssistant } from '../PromptAssistant/PromptAssistant';
 import { Evaluator } from '../Evaluator/Evaluator';
+import { HistoryTimeline } from '../PromptEditor/features/HistoryTimeline/HistoryTimeline';
 import { NavActions } from './features/NavActions/NavActions';
 import { Button, SlideOverPanel, SettingsModal } from '@/components';
-import { Wand2 } from 'lucide-react';
-import { getProviderColor } from '@/config/providers';
+import { Wand2, Play } from 'lucide-react';
+import { useExecutePrompt } from '../../hooks/useExecutePrompt';
+import { useExecutionStore, selectCanExecute } from '@/stores';
 
 export function Workspace() {
   const { handleKeyDown, isAssistantOpen, toggleAssistant, closeAssistant } =
@@ -27,6 +30,22 @@ export function Workspace() {
     tier1Models,
     isModelAvailable,
   } = usePanelModel();
+
+  // Run button logic
+  const { executeAll } = useExecutePrompt();
+  const canExecute = useExecutionStore(selectCanExecute);
+  const { isExecuting, historyViewIndex, restoreHistoryVersion } = useExecutionStore();
+  const isViewingHistory = historyViewIndex >= 0;
+
+  const handleRun = useCallback(() => {
+    if (canExecute) {
+      // If viewing history, restore all parts from that snapshot first
+      if (isViewingHistory) {
+        restoreHistoryVersion(historyViewIndex);
+      }
+      executeAll();
+    }
+  }, [canExecute, executeAll, isViewingHistory, historyViewIndex, restoreHistoryVersion]);
 
   return (
     <div
@@ -72,6 +91,21 @@ export function Workspace() {
         {/* Left side: Prompt Editor + Models */}
         <div className="w-1/2 border-r border-neutral-200 flex flex-col overflow-hidden">
           <div className="flex-1 p-4 flex flex-col gap-4 overflow-auto">
+            {/* Action bar: History + Run */}
+            <div className="flex-shrink-0 flex items-center">
+              <HistoryTimeline />
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleRun}
+                loading={isExecuting}
+                disabled={!canExecute}
+                icon={<Play className="h-4 w-4" />}
+                className="ml-auto"
+              >
+                Run
+              </Button>
+            </div>
             <div className="flex-shrink-0">
               <PromptEditor />
             </div>

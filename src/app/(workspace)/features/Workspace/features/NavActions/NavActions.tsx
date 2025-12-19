@@ -2,13 +2,10 @@
 
 import { useNavActions } from './hooks/useNavActions';
 import { Button, ThemeToggle } from '@/components';
-import { Play, Download, Upload, Settings, FilePlus } from 'lucide-react';
+import { Download, Upload, Settings, FilePlus } from 'lucide-react';
 
 export function NavActions() {
   const {
-    canExecute,
-    isExecuting,
-    onRun,
     onExport,
     canExport,
     onImportClick,
@@ -66,18 +63,6 @@ export function NavActions() {
         className="hidden"
         aria-label="Import file input"
       />
-
-      {/* Run button */}
-      <Button
-        variant="primary"
-        size="sm"
-        onClick={onRun}
-        loading={isExecuting}
-        disabled={!canExecute}
-        icon={<Play className="h-4 w-4" />}
-      >
-        Run
-      </Button>
 
       {/* Theme toggle */}
       <ThemeToggle />

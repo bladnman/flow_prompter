@@ -29,8 +29,8 @@ export function HistoryTimeline() {
   };
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-neutral-50 border-t border-neutral-200">
-      <span className="text-xs text-neutral-500 flex-shrink-0">History:</span>
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-neutral-500 dark:text-neutral-400 flex-shrink-0">History:</span>
 
       {/* Timeline slider */}
       <div className="flex items-center flex-1 overflow-x-auto">
