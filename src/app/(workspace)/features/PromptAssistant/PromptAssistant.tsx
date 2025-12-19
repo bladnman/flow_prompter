@@ -1,37 +1,37 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { usePromptAssistant } from './hooks/usePromptAssistant';
-import { Button, StreamingText, MarkdownRenderer } from '@/components';
-import { Send, Trash2, Sparkles } from 'lucide-react';
-import { MODELS, getModelById } from '@/config/providers';
+import { Button, MarkdownRenderer } from '@/components';
+import { Send, Plus, Sparkles, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import { parseAssistantResponse } from './utils/parseAssistantResponse';
 import { SuggestionCard } from './features/SuggestionCard/SuggestionCard';
 
 interface PromptAssistantProps {
   isOpen?: boolean;
+  modelId?: string;
 }
 
-export function PromptAssistant({ isOpen }: PromptAssistantProps) {
+export function PromptAssistant({ isOpen, modelId }: PromptAssistantProps) {
   const {
     conversation,
     currentInput,
     isGenerating,
     streamingContent,
-    selectedModelId,
     setCurrentInput,
-    setSelectedModelId,
     sendMessage,
     clearConversation,
     hasExecutionContext,
     applySuggestion,
     applyingId,
     currentPromptContent,
-  } = usePromptAssistant();
+  } = usePromptAssistant({ modelId });
 
-  const selectedModel = getModelById(selectedModelId);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const conversationRef = useRef<HTMLDivElement>(null);
+
+  // State for collapsible streaming preview (collapsed by default)
+  const [isStreamingExpanded, setIsStreamingExpanded] = useState(false);
 
   // Scroll to bottom and focus input when panel opens
   useEffect(() => {
@@ -82,7 +82,7 @@ export function PromptAssistant({ isOpen }: PromptAssistantProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b border-neutral-200 bg-neutral-50">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
         <div className="flex items-center gap-2">
           {!hasExecutionContext && (
             <span className="text-xs text-amber-600">
@@ -91,28 +91,16 @@ export function PromptAssistant({ isOpen }: PromptAssistantProps) {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <select
-            value={selectedModelId}
-            onChange={(e) => setSelectedModelId(e.target.value)}
-            disabled={isGenerating}
-            className="text-xs px-2 py-1 border border-neutral-200 rounded bg-white
-                       focus:outline-none focus:ring-1 focus:ring-violet-500
-                       disabled:bg-neutral-50 disabled:cursor-not-allowed"
-            title={selectedModel?.displayName || 'Select model'}
-          >
-            {MODELS.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.displayName}
-              </option>
-            ))}
-          </select>
           <Button
             variant="ghost"
             size="sm"
             onClick={clearConversation}
-            disabled={conversation.length === 0}
-            icon={<Trash2 className="h-3 w-3" />}
-          />
+            disabled={conversation.length === 0 || isGenerating}
+            icon={<Plus className="h-3 w-3" />}
+            title="New chat"
+          >
+            New Chat
+          </Button>
         </div>
       </div>
 
@@ -167,7 +155,7 @@ export function PromptAssistant({ isOpen }: PromptAssistantProps) {
                     segment.type === 'text' ? (
                       <div
                         key={idx}
-                        className="rounded-lg px-3 py-2 bg-neutral-100 text-neutral-900"
+                        className="rounded-lg px-3 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
                       >
                         <MarkdownRenderer content={segment.content} className="text-sm" />
                       </div>
@@ -190,18 +178,40 @@ export function PromptAssistant({ isOpen }: PromptAssistantProps) {
           );
         })}
 
-        {/* Streaming response */}
+        {/* Streaming response - collapsible thinking block */}
         {streamingContent && (
           <div className="flex justify-start">
-            <div className="max-w-[85%] rounded-lg px-3 py-2 bg-neutral-100 text-neutral-900">
-              <StreamingText content={streamingContent} isStreaming={true} />
+            <div className="max-w-[85%] rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 overflow-hidden">
+              {/* Header - always visible */}
+              <button
+                onClick={() => setIsStreamingExpanded(!isStreamingExpanded)}
+                className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+              >
+                <Loader2 className="h-3 w-3 animate-spin text-violet-600 dark:text-violet-400" />
+                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">Replying...</span>
+                {isStreamingExpanded ? (
+                  <ChevronDown className="h-3 w-3 text-neutral-400 ml-auto" />
+                ) : (
+                  <ChevronRight className="h-3 w-3 text-neutral-400 ml-auto" />
+                )}
+              </button>
+              {/* Expandable content */}
+              {isStreamingExpanded && (
+                <div className="px-3 pb-2 border-t border-neutral-200 dark:border-neutral-700">
+                  <div className="max-h-48 overflow-y-auto mt-2">
+                    <pre className="text-xs font-mono text-neutral-500 dark:text-neutral-400 whitespace-pre-wrap break-words">
+                      {streamingContent}
+                    </pre>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
       {/* Input */}
-      <div className="flex-shrink-0 p-4 border-t border-neutral-200 bg-white">
+      <div className="flex-shrink-0 p-4 border-t border-neutral-200 bg-white dark:bg-neutral-900 dark:border-neutral-700">
         <form onSubmit={handleSubmit} className="flex gap-2 items-end">
           <textarea
             ref={textareaRef}
@@ -212,8 +222,11 @@ export function PromptAssistant({ isOpen }: PromptAssistantProps) {
             disabled={isGenerating}
             rows={1}
             className="flex-1 px-3 py-2 border border-neutral-200 rounded-lg text-sm
+                       bg-white text-neutral-900
+                       dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-100
                        focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
-                       disabled:bg-neutral-50 disabled:cursor-not-allowed
+                       disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed
+                       dark:disabled:bg-neutral-700 dark:disabled:text-neutral-400
                        resize-none overflow-hidden"
           />
           <Button

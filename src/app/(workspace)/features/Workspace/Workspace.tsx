@@ -52,11 +52,11 @@ export function Workspace() {
             <NavActions />
             <div className="w-px h-6 bg-neutral-200" />
             <Button
-              variant={isAssistantOpen ? 'primary' : 'ghost'}
+              variant="primary"
               size="sm"
               onClick={toggleAssistant}
               icon={<Wand2 className="h-4 w-4" />}
-              className={isAssistantOpen ? '' : 'text-violet-600 hover:text-violet-700 hover:bg-violet-50'}
+              className={isAssistantOpen ? 'ring-2 ring-violet-300 ring-offset-2' : ''}
             >
               Assistant
             </Button>

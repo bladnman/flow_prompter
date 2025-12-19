@@ -5,23 +5,30 @@ import { useAssistantStore, useExecutionStore, useSettingsStore } from '@/stores
 import type { ParsedSuggestion } from '../utils/parseAssistantResponse';
 import { getModelById } from '@/config/providers';
 
-export function usePromptAssistant() {
+interface UsePromptAssistantOptions {
+  /** Model ID passed from parent (shared panel model) */
+  modelId?: string;
+}
+
+export function usePromptAssistant(options: UsePromptAssistantOptions = {}) {
   const {
     conversation,
     currentInput,
     isGenerating,
     streamingContent,
     executionSnapshot,
-    selectedModelId,
     setCurrentInput,
-    setSelectedModelId,
     addUserMessage,
+    addAssistantMessage,
     startGeneration,
     endGeneration,
     updateStreamingContent,
     finalizeStreamingMessage,
     clearConversation,
   } = useAssistantStore();
+
+  // Use modelId from options if provided, otherwise fall back to default
+  const selectedModelId = options.modelId ?? 'claude-opus-4-5-20251101';
 
   const {
     currentPrompt,
@@ -90,8 +97,9 @@ export function usePromptAssistant() {
       finalizeStreamingMessage();
     } catch (error) {
       console.error('Assistant error:', error);
-      // Add error message
-      finalizeStreamingMessage();
+      // Add error message to conversation
+      const errorMsg = error instanceof Error ? error.message : 'An unexpected error occurred';
+      addAssistantMessage(`⚠️ **Error:** ${errorMsg}\n\nThis may be due to an invalid API key or the selected model not being available with your current credentials. Check your API key settings or try a different model.`);
     } finally {
       endGeneration();
     }
@@ -102,6 +110,7 @@ export function usePromptAssistant() {
     executionSnapshot,
     selectedModelId,
     addUserMessage,
+    addAssistantMessage,
     startGeneration,
     endGeneration,
     updateStreamingContent,
@@ -204,9 +213,7 @@ export function usePromptAssistant() {
     currentInput,
     isGenerating,
     streamingContent,
-    selectedModelId,
     setCurrentInput,
-    setSelectedModelId,
     sendMessage,
     clearConversation,
     hasExecutionContext,
