@@ -43,7 +43,7 @@ function applyTheme(theme: Theme): void {
 }
 
 export const useThemeStore = create<ThemeState & ThemeActions>((set, get) => ({
-  theme: 'light',
+  theme: 'dark',
   isInitialized: false,
 
   setTheme: (theme) => {
@@ -61,7 +61,7 @@ export const useThemeStore = create<ThemeState & ThemeActions>((set, get) => ({
   loadFromStorage: () => {
     if (get().isInitialized) return;
     const stored = getStorageItem(STORAGE_KEYS.THEME) as Theme | null;
-    const theme = stored ?? 'light';
+    const theme = stored ?? 'dark';
     set({ theme, isInitialized: true });
     applyTheme(theme);
   },
